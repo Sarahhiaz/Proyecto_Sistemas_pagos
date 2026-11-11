@@ -1,36 +1,27 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package principal;
 
-/**
- *
- * @author Admin
- */
-import Logica.GestorPago;
-import Entidades.EstadoPago;
 import Entidades.Pago;
 import Entidades.PagoEfectivo;
 import Entidades.PagoElectronico;
 import Entidades.PagoTarjeta;
-import Entidades.Transaccion;
-import Entidades.MetodoPago;
-import Entidades.Venta;
 import Entidades.PagoTransferencia;
+import Entidades.Transaccion;
+import Entidades.Venta;
 
+import Logica.GestorPago;
 
 import java.util.Scanner;
 
 public class main {
 
-    private static Scanner scanner =
+    private static final Scanner scanner =
             new Scanner(System.in);
 
-    private static GestorPago gestor =
+    private static final GestorPago gestor =
             new GestorPago();
 
-    public static void main(String[] args) {
+    public static void main(
+            String[] args) {
 
         int opcion;
 
@@ -38,9 +29,10 @@ public class main {
 
             mostrarMenu();
 
-            opcion = leerEntero(
-                    "Seleccione una opcion: "
-            );
+            opcion =
+                    leerEntero(
+                            "Seleccione una opcion: "
+                    );
 
             switch (opcion) {
 
@@ -63,8 +55,9 @@ public class main {
                     break;
 
                 default:
+
                     System.out.println(
-                            "\nOpcion no válida."
+                            "Seleccione una opcion del 1 al 4."
                     );
             }
 
@@ -106,111 +99,179 @@ public class main {
 
     private static void registrarVenta() {
 
-        System.out.println(
-                "\n========== NUEVA VENTA =========="
-        );
-
-        System.out.print(
-                "Descripcion de la venta: "
-        );
-
-        String descripcion =
-                scanner.nextLine();
-
-        double total =
-                leerDouble(
-                        "Total de la venta: $"
-                );
-
-        if (total <= 0) {
+        try {
 
             System.out.println(
-                    "El total debe ser mayor que cero."
+                    "\n========== NUEVA VENTA =========="
             );
 
-            return;
-        }
+            String codigo =
+                    leerTextoObligatorio(
+                            "Codigo de la venta: "
+                    );
 
-        Venta venta =
-                new Venta(
-                        descripcion,
-                        total
+            String descripcion =
+                    leerTextoObligatorio(
+                            "Descripcion: "
+                    );
+
+            double total =
+                    leerDoublePositivo(
+                            "Total de la venta: $"
+                    );
+
+            Venta venta =
+                    new Venta(
+                            codigo,
+                            descripcion,
+                            total
+                    );
+
+            
+            gestor.registrarVenta(
+                    venta
+            );
+
+            venta.mostrarVenta();
+
+            Pago metodoPago =
+                    seleccionarMetodoPago(
+                            total
+                    );
+
+            if (metodoPago == null) {
+
+                System.out.println(
+                        "La venta fue registrada, pero no se proceso ningún pago."
                 );
 
-        venta.mostrarVenta();
+                return;
+            }
 
-        Pago metodoPago =
-                seleccionarMetodoPago(total);
+            boolean resultado =
+                    gestor.procesarVenta(
+                            venta,
+                            metodoPago
+                    );
 
-        if (metodoPago == null) {
+            System.out.println();
+
+            if (resultado) {
+
+                System.out.println(
+                        "PAGO APROBADO"
+                );
+
+            } else {
+
+                System.out.println(
+                        "PAGO RECHAZADO"
+                );
+            }
 
             System.out.println(
-                    "No se selecciono un metodo de pago."
+                    metodoPago
+                            .obtenerDetalles()
             );
 
-            return;
+        } catch (
+                IllegalArgumentException e) {
+
+            System.out.println(
+                    "\nError de validación: "
+                    + e.getMessage()
+            );
+
+        } catch (
+                IllegalStateException e) {
+
+            System.out.println(
+                    "\nOperacion no permitida: "
+                    + e.getMessage()
+            );
         }
-
-        gestor.procesarVenta(
-                venta,
-                metodoPago
-        );
-
-        System.out.println(
-                "\n" +
-                metodoPago.obtenerDetalles()
-        );
     }
 
     private static Pago seleccionarMetodoPago(
             double monto) {
 
-        System.out.println(
-                "\n===== METODO DE PAGO ====="
-        );
+        while (true) {
 
-        System.out.println(
-                "1. Efectivo"
-        );
+            System.out.println(
+                    "\n===== METODO DE PAGO ====="
+            );
 
-        System.out.println(
-                "2. Tarjeta"
-        );
+            System.out.println(
+                    "1. Efectivo"
+            );
 
-        System.out.println(
-                "3. Transferencia bancaria"
-        );
+            System.out.println(
+                    "2. Tarjeta"
+            );
 
-        System.out.println(
-                "4. Pago electronico"
-        );
+            System.out.println(
+                    "3. Transferencia bancaria"
+            );
 
-        int opcion =
-                leerEntero(
-                        "Seleccione: "
-                );
+            System.out.println(
+                    "4. Pago electronico"
+            );
 
-        switch (opcion) {
+            System.out.println(
+                    "5. Cancelar"
+            );
 
-            case 1:
-                return crearPagoEfectivo(monto);
+            int opcion =
+                    leerEntero(
+                            "Seleccione: "
+                    );
 
-            case 2:
-                return crearPagoTarjeta(monto);
+            try {
 
-            case 3:
-                return crearTransferencia(monto);
+                switch (opcion) {
 
-            case 4:
-                return crearPagoElectronico(monto);
+                    case 1:
+                        return crearPagoEfectivo(
+                                monto
+                        );
 
-            default:
+                    case 2:
+                        return crearPagoTarjeta(
+                                monto
+                        );
+
+                    case 3:
+                        return crearTransferencia(
+                                monto
+                        );
+
+                    case 4:
+                        return crearPagoElectronico(
+                                monto
+                        );
+
+                    case 5:
+                        return null;
+
+                    default:
+
+                        System.out.println(
+                                "Seleccione del 1 al 5."
+                        );
+                }
+
+            } catch (
+                    IllegalArgumentException e) {
 
                 System.out.println(
-                        "Metodo de pago no valido."
+                        "\nDatos incorrectos: "
+                        + e.getMessage()
                 );
 
-                return null;
+                System.out.println(
+                        "Intente nuevamente."
+                );
+            }
         }
     }
 
@@ -218,7 +279,7 @@ public class main {
             double monto) {
 
         double recibido =
-                leerDouble(
+                leerDoublePositivo(
                         "Monto recibido: $"
                 );
 
@@ -231,19 +292,15 @@ public class main {
     private static Pago crearPagoTarjeta(
             double monto) {
 
-        System.out.print(
-                "Numero de tarjeta (16 digitos): "
-        );
-
         String tarjeta =
-                scanner.nextLine();
-
-        System.out.print(
-                "Nombre del titular: "
-        );
+                leerTextoObligatorio(
+                        "Numero de tarjeta (16 dígitos): "
+                );
 
         String titular =
-                scanner.nextLine();
+                leerTextoObligatorio(
+                        "Nombre del titular: "
+                );
 
         return new PagoTarjeta(
                 monto,
@@ -255,26 +312,20 @@ public class main {
     private static Pago crearTransferencia(
             double monto) {
 
-        System.out.print(
-                "Banco: "
-        );
-
         String banco =
-                scanner.nextLine();
-
-        System.out.print(
-                "Número de cuenta: "
-        );
+                leerTextoObligatorio(
+                        "Banco: "
+                );
 
         String cuenta =
-                scanner.nextLine();
-
-        System.out.print(
-                "Referencia: "
-        );
+                leerTextoObligatorio(
+                        "Numero de cuenta: "
+                );
 
         String referencia =
-                scanner.nextLine();
+                leerTextoObligatorio(
+                        "Referencia: "
+                );
 
         return new PagoTransferencia(
                 monto,
@@ -287,26 +338,20 @@ public class main {
     private static Pago crearPagoElectronico(
             double monto) {
 
-        System.out.print(
-                "Proveedor (PayPal, Stripe, etc.): "
-        );
-
         String proveedor =
-                scanner.nextLine();
-
-        System.out.print(
-                "Correo electrónico: "
-        );
+                leerTextoObligatorio(
+                        "Proveedor: "
+                );
 
         String correo =
-                scanner.nextLine();
-
-        System.out.print(
-                "Token: "
-        );
+                leerTextoObligatorio(
+                        "Correo electronico: "
+                );
 
         String token =
-                scanner.nextLine();
+                leerTextoObligatorio(
+                        "Token: "
+                );
 
         return new PagoElectronico(
                 monto,
@@ -316,6 +361,37 @@ public class main {
         );
     }
 
+    // =================================
+    // VALIDACIONES DE ENTRADA
+    // =================================
+
+    private static String leerTextoObligatorio(
+            String mensaje) {
+
+        while (true) {
+
+            System.out.print(
+                    mensaje
+            );
+
+            String valor =
+                    scanner
+                            .nextLine()
+                            .trim();
+
+            if (valor.isEmpty()) {
+
+                System.out.println(
+                        "Este campo es obligatorio."
+                );
+
+                continue;
+            }
+
+            return valor;
+        }
+    }
+
     private static int leerEntero(
             String mensaje) {
 
@@ -323,16 +399,30 @@ public class main {
 
             try {
 
-                System.out.print(mensaje);
+                System.out.print(
+                        mensaje
+                );
 
-                int valor =
-                        Integer.parseInt(
-                                scanner.nextLine()
-                        );
+                String texto =
+                        scanner
+                                .nextLine()
+                                .trim();
 
-                return valor;
+                if (texto.isEmpty()) {
 
-            } catch (NumberFormatException e) {
+                    System.out.println(
+                            "Debe ingresar una opcion."
+                    );
+
+                    continue;
+                }
+
+                return Integer.parseInt(
+                        texto
+                );
+
+            } catch (
+                    NumberFormatException e) {
 
                 System.out.println(
                         "Ingrese un numero entero valido."
@@ -341,26 +431,53 @@ public class main {
         }
     }
 
-    private static double leerDouble(
+    private static double leerDoublePositivo(
             String mensaje) {
 
         while (true) {
 
             try {
 
-                System.out.print(mensaje);
+                System.out.print(
+                        mensaje
+                );
 
-                double valor =
+                String texto =
+                        scanner
+                                .nextLine()
+                                .trim();
+
+                if (texto.isEmpty()) {
+
+                    System.out.println(
+                            "Este campo es obligatorio."
+                    );
+
+                    continue;
+                }
+
+                double numero =
                         Double.parseDouble(
-                                scanner.nextLine()
+                                texto
                         );
 
-                return valor;
+                if (numero <= 0) {
 
-            } catch (NumberFormatException e) {
+                    System.out.println(
+                            "El valor debe ser mayor que cero."
+                    );
+
+                    continue;
+                }
+
+                return numero;
+
+            } catch (
+                    NumberFormatException e) {
 
                 System.out.println(
-                        "Ingrese un numero valido."
+                        "Ingrese un numero valido. "
+                        + "Ejemplo: 25.50"
                 );
             }
         }

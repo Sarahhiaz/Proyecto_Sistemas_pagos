@@ -3,17 +3,23 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/JAVA/Sistemas_procesamientos_pagos/src/Entidades/PagoElectronico.java</file>
-            <file>file:/C:/JAVA/Sistemas_procesamientos_pagos/src/Entidades/Pago.java</file>
-            <file>file:/C:/JAVA/Sistemas_procesamientos_pagos/src/Entidades/Venta.java</file>
             <file>file:/C:/JAVA/Sistemas_procesamientos_pagos/src/Entidades/EstadoPago.java</file>
+            <file>file:/C:/JAVA/Sistemas_procesamientos_pagos/src/formularios/RegisterFrame.java</file>
             <file>file:/C:/JAVA/Sistemas_procesamientos_pagos/src/Entidades/PagoEfectivo.java</file>
-            <file>file:/C:/JAVA/Sistemas_procesamientos_pagos/src/Entidades/PagoTarjeta.java</file>
             <file>file:/C:/JAVA/Sistemas_procesamientos_pagos/src/Entidades/PagoTransferencia.java</file>
-            <file>file:/C:/JAVA/Sistemas_procesamientos_pagos/src/Entidades/MetodoPago.java</file>
+            <file>file:/C:/JAVA/Sistemas_procesamientos_pagos/src/Entidades/Venta.java</file>
+            <file>file:/C:/JAVA/Sistemas_procesamientos_pagos/src/Entidades/ResumenPago.java</file>
+            <file>file:/C:/JAVA/Sistemas_procesamientos_pagos/src/Entidades/PagoTarjeta.java</file>
             <file>file:/C:/JAVA/Sistemas_procesamientos_pagos/src/Entidades/PagoBitcoin.java</file>
-            <file>file:/C:/JAVA/Sistemas_procesamientos_pagos/src/Logica/GestorPago.java</file>
+            <file>file:/C:/JAVA/Sistemas_procesamientos_pagos/src/Entidades/MetodoPago.java</file>
+            <file>file:/C:/JAVA/Sistemas_procesamientos_pagos/src/Entidades/MongoConnection.java</file>
             <file>file:/C:/JAVA/Sistemas_procesamientos_pagos/src/Entidades/Transaccion.java</file>
+            <file>file:/C:/JAVA/Sistemas_procesamientos_pagos/src/Logica/SecurityUtils.java</file>
+            <file>file:/C:/JAVA/Sistemas_procesamientos_pagos/src/principal/main.java</file>
+            <file>file:/C:/JAVA/Sistemas_procesamientos_pagos/src/Entidades/Pago.java</file>
+            <file>file:/C:/JAVA/Sistemas_procesamientos_pagos/src/Logica/GestorPago.java</file>
+            <file>file:/C:/JAVA/Sistemas_procesamientos_pagos/src/Entidades/PagoElectronico.java</file>
+            <file>file:/C:/JAVA/Sistemas_procesamientos_pagos/src/Logica/UsuarioRepository.java</file>
         </group>
     </open-files>
 </project-private>

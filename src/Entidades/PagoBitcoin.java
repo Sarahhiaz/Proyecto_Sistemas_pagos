@@ -58,4 +58,13 @@ public class PagoBitcoin extends Pago {
                 super.obtenerDetalles()
                 + "\nWallet: " + wallet;
     }
+
+    private void aprobarPago() {
+        throw new UnsupportedOperationException("Not supported yet."); // monitorea el rendimiento y fuerzan la ejecucion del recolector  nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    private void rechazarPago() {
+        throw new UnsupportedOperationException("Not supported yet."); //  nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }
+
