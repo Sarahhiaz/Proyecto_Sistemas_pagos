@@ -1,143 +1,79 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package Entidades;
 
+/**
+ *
+ * @author Admin
+ */
+
+import Entidades.Venta;
+import Entidades.Pago;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 public class Transaccion {
 
-    private String idTransaccion;
+    private static int contador = 1;
 
-    private Venta venta;
-
-    private Pago metodoPago;
-
-    private double importe;
-
+    private int idTransaccion;
+    private int idVenta;
     private LocalDateTime fecha;
-
+    private double monto;
+    private String metodoPago;
     private EstadoPago estado;
 
     public Transaccion(
             Venta venta,
-            Pago metodoPago) {
+            Pago pago) {
 
-        if (venta == null) {
-
-            throw new IllegalArgumentException(
-                    "La transaccion debe estar asociada a una venta."
-            );
-        }
-
-        if (metodoPago == null) {
-
-            throw new IllegalArgumentException(
-                    "La transaccion debe tener un metodo de pago."
-            );
-        }
-
-        if (Math.abs(
-                venta.getImporte()
-                -
-                metodoPago.getMonto()
-        ) > 0.01) {
-
-            throw new IllegalArgumentException(
-                    "El importe de la venta y el pago no coinciden."
-            );
-        }
-
-        this.idTransaccion =
-                UUID.randomUUID()
-                        .toString();
-
-        this.venta =
-                venta;
-
+        this.idTransaccion = contador++;
+        this.idVenta = venta.getIdVenta();
+        this.fecha = LocalDateTime.now();
+        this.monto = pago.getMonto();
         this.metodoPago =
-                metodoPago;
-
-        this.importe =
-                metodoPago.getMonto();
-
-        this.fecha =
-                LocalDateTime.now();
-
-        this.estado =
-                metodoPago.getEstado();
-    }
-
-    public String getIdTransaccion() {
-        return idTransaccion;
-    }
-
-    public Venta getVenta() {
-        return venta;
-    }
-
-    public Pago getMetodoPago() {
-        return metodoPago;
-    }
-
-    public double getImporte() {
-        return importe;
-    }
-
-    public double getMonto() {
-        return importe;
-    }
-
-    public LocalDateTime getFecha() {
-        return fecha;
+                pago.getClass().getSimpleName();
+        this.estado = pago.getEstado();
     }
 
     public EstadoPago getEstado() {
         return estado;
     }
 
-    public String getNombreMetodoPago() {
-
-        return metodoPago
-                .getClass()
-                .getSimpleName();
+    public double getMonto() {
+        return monto;
     }
 
     public void mostrar() {
 
         System.out.println(
-                "\n----------------------------------"
+                "\n-----------------------------"
         );
 
         System.out.println(
-                "ID: "
-                + idTransaccion
+                "Transacción #" + idTransaccion
         );
 
         System.out.println(
-                "Venta: "
-                + venta.getCodigo()
+                "Venta #" + idVenta
         );
 
         System.out.println(
-                "Metodo: "
-                + getNombreMetodoPago()
+                "Fecha: " + fecha
         );
 
         System.out.println(
-                "Importe: $"
-                + String.format(
-                        "%.2f",
-                        importe
-                )
+                "Método: " + metodoPago
         );
 
         System.out.println(
-                "Estado: "
-                + estado
+                "Monto: $"
+                + String.format("%.2f", monto)
         );
 
         System.out.println(
-                "Fecha: "
-                + fecha
+                "Estado: " + estado
         );
     }
 }
