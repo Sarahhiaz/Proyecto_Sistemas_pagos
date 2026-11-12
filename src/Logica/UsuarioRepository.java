@@ -1,59 +1,67 @@
 package Logica;
 
-import Entidades.ConexionDB;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import org.bson.Document;
 
+import Entidades.ConexionDB;
+
 public class UsuarioRepository {
 
-    public static boolean registrarUsuario(String id, String nombre, String correo, String contraseña, String rol) {
+    public static boolean registrarUsuario(String idUnico, String nombre, String correo, String password, String rol) {
         try {
             MongoDatabase db = ConexionDB.getDatabase();
-            MongoCollection<Document> collection = db.getCollection("usuarios");
+            MongoCollection<Document> colUsuarios = db.getCollection("usuarios");
 
-            // Verificar si el correo ya existe
-            Document existente = collection.find(Filters.eq("correo", correo)).first();
+            Document existente = colUsuarios.find(
+                Filters.or(
+                    Filters.eq("correo", correo),
+                    Filters.eq("usuario", correo)
+                )
+            ).first();
+
             if (existente != null) {
-                return false; 
+                return false; // El usuario ya existe
             }
 
-            // Encriptar la contraseña antes de guardarla
-            String passwordEncriptada = SecurityUtils.encryptPassword(contraseña);
+            String passwordEncriptada = SecurityUtils.encryptPassword(password);
 
-            Document doc = new Document("id", id)
+            Document nuevoUsuario = new Document("idUnico", idUnico)
                     .append("nombre", nombre)
                     .append("correo", correo)
-                    .append("contraseña", passwordEncriptada)
+                    .append("usuario", correo)
+                    .append("password", passwordEncriptada)
                     .append("rol", rol);
 
-            collection.insertOne(doc);
+            colUsuarios.insertOne(nuevoUsuario);
             return true;
         } catch (Exception e) {
-            System.err.println("Error al registrar usuario: " + e.getMessage());
+            e.printStackTrace();
             return false;
         }
     }
 
-    public static Document validarLogin(String correo, String contraseña) {
+    public static Document validarLogin(String correo, String password) {
         try {
             MongoDatabase db = ConexionDB.getDatabase();
-            MongoCollection<Document> collection = db.getCollection("usuarios");
+            MongoCollection<Document> colUsuarios = db.getCollection("usuarios");
 
-            // Encriptar la contraseña ingresada para buscar el hash coincidente
-            String passwordEncriptada = SecurityUtils.encryptPassword(contraseña);
+            String passwordEncriptada = SecurityUtils.encryptPassword(password);
 
-            Document usuario = collection.find(
-                    Filters.and(
-                            Filters.eq("correo", correo),
-                            Filters.eq("contraseña", passwordEncriptada)
-                    )
+            Document usuario = colUsuarios.find(
+                Filters.and(
+                    Filters.or(
+                        Filters.eq("correo", correo),
+                        Filters.eq("usuario", correo)
+                    ),
+                    Filters.eq("password", passwordEncriptada)
+                )
             ).first();
 
             return usuario;
         } catch (Exception e) {
-            System.err.println("Error en login: " + e.getMessage());
+            e.printStackTrace();
             return null;
         }
     }
